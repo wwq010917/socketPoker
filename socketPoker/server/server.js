@@ -5,9 +5,8 @@ const gameStates = {};
 
 io.on('connection', socket => {
   // When a new player connects, add them to the game
-  socket.on('join', (playerName, roomName) => {
-    // Get the game state for the specified room
-    console.log(playerName + ' has joined the room ' + roomName);
+  socket.on('create', (playerName, roomName) => {
+    console.log(playerName + ' has created the room ' + roomName + '\n');
     let gameState = gameStates[roomName];
     if (!gameState) {
       // If there is no game state for the room, create a new one
@@ -19,16 +18,21 @@ io.on('connection', socket => {
       };
       gameStates[roomName] = gameState;
     }
-
-    // Add the player to the game
-    gameState.players.push({
-      id: socket.id,
-      name: playerName,
-      hand: [],
-      chips: 1000,
-    });
-    console.log(roomName);
-    socket.join(roomName);
+  });
+  socket.on('join', (playerName, roomName) => {
+    console.log(playerName + ' has joined the room ' + roomName + '\n');
+    let gameState = gameStates[roomName];
+    if (gameState) {
+      gameState.players.push({
+        id: socket.id,
+        name: playerName,
+        hand: [],
+        chips: 1000,
+      });
+      socket.join(roomName);
+    } else {
+      socket.emit('message', 'The room ' + roomName + ' does not exist.');
+    }
   });
 
   // When a player makes an action  update the game state accordingly

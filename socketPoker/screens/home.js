@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {StyleSheet, Text, View, Button, Modal, Alert} from 'react-native';
 import {TextInput} from 'react-native-gesture-handler';
 import io from 'socket.io-client';
-const socket = io('http://10.0.2.2:3000');
+global.socket = io('http://10.0.2.2:3000');
 
 export default function Home({navigation}) {
   const [isHostGamePressed, setIsHostGamePressed] = useState(false);
@@ -25,11 +25,14 @@ export default function Home({navigation}) {
       );
       return; // Return early to exit the function
     }
-    // Set the modal visibility to false
     setModalOneVisible(false);
-    // Generate a random 4-digit number for the room name
     roomName = Math.floor(Math.random() * 10000);
     global.roomName = roomName;
+    socket.on('connect', () => {
+      Alert.alert('Success', 'Connect to the server', [{text: 'OK'}]);
+      // When the client connects, send a 'join' event with the player's name and the room name
+      socket.emit('create', Name, roomName);
+    });
     navigation.navigate('Game');
   };
   const handleJoinPress = async () => {
@@ -40,7 +43,25 @@ export default function Home({navigation}) {
     setModalOneVisible(true);
     setIsHostGamePressed(true);
   };
-  const handleJoin = async () => {};
+  const handleJoin = async () => {
+    if (!validateName(Name)) {
+      // Show an alert to the user
+      Alert.alert(
+        'Invalid name',
+        'The name must be at least 1 and at most 8 characters long and no special characters',
+        [{text: 'OK'}],
+      );
+      return;
+    }
+    // Return early to exit the function
+    setModalOneVisible(false);
+    socket.on('connect', () => {
+      Alert.alert('Success', 'Connect to the server', [{text: 'OK'}]);
+      // When the client connects, send a 'join' event with the player's name and the room name
+      socket.emit('join', Name, roomNumber);
+    });
+    navigation.navigate('Game');
+  };
   return (
     <View style={styles.HomeContainer}>
       <Modal transparent={true} animationType="fade" visible={modalOneVisible}>
