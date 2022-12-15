@@ -1,0 +1,13 @@
+{
+  "migIndex": 1,
+  "data": [
+    {
+      "path": "assets/fonts/Ceceps-Handwriting.ttf",
+      "sha1": "2ad260b6bfd391f1f36b00358e4bfb36b05bc704"
+    },
+    {
+      "path": "assets/fonts/Njal-Bold.otf",
+      "sha1": "3fc44335eaa140f60d23edb8f6a7d6569aaae213"
+    }
+  ]
+}
