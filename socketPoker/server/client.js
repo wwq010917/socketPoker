@@ -7,9 +7,10 @@ let roomName; // Store the room name in a variable so we can access it in the 'd
 socket.on('connect', () => {
   console.log('trying');
   // When the client connects, send a 'join' event with the player's name and the room name
+  playerName = 'player1';
   roomName = 'room1';
-  socket.emit('join', 'Player 1', roomName);
-  socket.emit('disconnected', roomName);
+  socket.emit('create', playerName, roomName);
+  //socket.emit('disconnected', roomName);
 });
 
 socket.on('state', (gameState, room) => {

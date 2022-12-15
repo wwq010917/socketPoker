@@ -7,6 +7,7 @@ io.on('connection', socket => {
   // When a new player connects, add them to the game
   socket.on('create', (playerName, roomName) => {
     console.log(playerName + ' has created the room ' + roomName + '\n');
+
     let gameState = gameStates[roomName];
     if (!gameState) {
       // If there is no game state for the room, create a new one
@@ -16,6 +17,15 @@ io.on('connection', socket => {
         communityCards: [],
         pot: 0,
       };
+      gameState.players.push({
+        id: socket.id,
+        name: playerName,
+        hand: [],
+        chips: 1000,
+      });
+      socket.join(roomName);
+      socket.data.playerName = playerName;
+      socket.data.roomName = roomName;
       gameStates[roomName] = gameState;
     }
   });
@@ -40,14 +50,13 @@ io.on('connection', socket => {
     // Get the game state for the specified room
     const gameState = gameStates[roomName];
   });
-
-  socket.on('disconnected', roomName => {
-    console.log(roomName + ' is disconnected');
-    const gameState = gameStates[roomName];
+  socket.on('disconnect', () => {
+    console.log(socket.data.roomName + ' is disconnected');
+    const gameState = gameStates[socket.data.roomName];
     if (gameState) {
       gameState.players = gameState.players.filter(p => p.id !== socket.id);
       if (gameState.players.length === 0) {
-        delete gameStates[roomName];
+        delete gameStates[socket.data.roomName];
       }
     }
   });
