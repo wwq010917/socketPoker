@@ -1,10 +1,10 @@
 class Room {
   constructor(number) {
     this.roomNumber = number;
-    this.players = new Array();
+    this.players = {};
     this.communityCards = new Array();
     this.playerCards = new Array();
-    this.currentStatus = 'waiting';
+    this.waiting = true;
     this.setPositions = false;
     this.startingMoney = 1000;
     this.button;

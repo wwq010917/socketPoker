@@ -14,6 +14,14 @@ const PlayerTable = () => {
     // Update the state variable with the "players" data received in the response
     setPlayers(response.players);
   });
+
+  socket.on('wait', state => {
+    console.log('listen');
+    if (state) {
+      console.log('listen true');
+      socket.emit('start');
+    }
+  });
   const renderSeparator = () => {
     return (
       <View
