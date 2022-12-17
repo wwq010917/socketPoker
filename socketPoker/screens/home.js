@@ -5,16 +5,19 @@ import io from 'socket.io-client';
 export const SocketContext = createContext(io('http://10.0.2.2:3000'));
 export default function Home({navigation}) {
   const socket = useContext(SocketContext);
-  // console.log(socket);
+  // Declare state variables using the useState hook
   const [isHostGamePressed, setIsHostGamePressed] = useState(false);
   const [modalOneVisible, setModalOneVisible] = useState(false);
   const [Name, onChangeText] = useState('');
   const nameRegex = /^[\u4e00-\u9fa5a-zA-Z0-9]{1,8}$/;
   const [roomNumber, onChangeNumber] = useState('1234');
 
+  // Function to validate player's name
   const validateName = name => {
     return nameRegex.test(name);
   };
+
+  // Event handler for when the host creates a game
   const handleHostCreate = async () => {
     // Check if the name is valid
     if (!validateName(Name)) {
@@ -28,19 +31,26 @@ export default function Home({navigation}) {
     }
     setModalOneVisible(false);
 
-    //global.roomNumber = roomNumber;
+    // Emit a 'create' event through the socket connection
     socket.emit('create', Name);
     navigation.navigate('Game');
   };
+
+  // Event handler for when the user wants to join a game
   const handleJoinPress = async () => {
     setModalOneVisible(true);
     setIsHostGamePressed(false);
   };
+
+  // Event handler for when the user wants to host a game
   const handleHostPress = async () => {
     setModalOneVisible(true);
     setIsHostGamePressed(true);
   };
+
+  // Event handler for when the user submits the form to join a game
   const handleJoin = async () => {
+    // Check if the name is valid
     if (!validateName(Name)) {
       // Show an alert to the user
       Alert.alert(
@@ -48,9 +58,9 @@ export default function Home({navigation}) {
         'The name must be at least 1 and at most 8 characters long and no special characters',
         [{text: 'OK'}],
       );
-      return;
+      return; // Return early to exit the function
     }
-    // Return early to exit the function
+    // Set modal visibility to false
     setModalOneVisible(false);
     // When the client connects, send a 'join' event with the player's name and the room name
     socket.emit('join', Name, roomNumber, response => {

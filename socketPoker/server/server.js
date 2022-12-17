@@ -13,11 +13,17 @@ io.on('connection', socket => {
   // When a new player wants to create a room
   socket.on('create', playerName => {
     var roomNumber = Math.floor(Math.random() * 10000);
-    console.log(playerName + ' has created the room ' + roomNumber + '\n');
+    while (roomNumber < 1000) {
+      roomNumber = Math.floor(Math.random() * 10000);
+    }
     //if room exist generate a new roomNumber
     while (gameStates[roomNumber]) {
       roomNumber = Math.floor(Math.random() * 10000);
+      while (roomNumber < 1000) {
+        roomNumber = Math.floor(Math.random() * 10000);
+      }
     }
+    console.log(playerName + ' has created the room ' + roomNumber + '\n');
     let gameState = gameStates[roomNumber];
     // If there is no game state for the room, create a new one
     gameState = new Room(roomNumber);
@@ -32,13 +38,22 @@ io.on('connection', socket => {
     console.log(playerName + ' trying to room ' + roomNumber + '\n');
     let gameState = gameStates[roomNumber];
     if (gameState) {
-      console.log(playerName + ' has joined the room ' + roomNumber + '\n');
-      gameState.players.push(new playerStatus(playerName, socket.id));
-      socket.join(roomNumber);
-      socket.data.playerName = playerName;
-      socket.data.roomNumber = roomNumber;
-      // Send a response to the client indicating that the join event was successful
-      callback({success: true});
+      //check if there is still space for players to join
+      if (gameState.players.length <= 8) {
+        console.log(playerName + ' has joined the room ' + roomNumber + '\n');
+        gameState.players.push(new playerStatus(playerName, socket.id));
+        socket.join(roomNumber);
+        socket.data.playerName = playerName;
+        socket.data.roomNumber = roomNumber;
+        // Send a response to the client indicating that the join event was successful
+        callback({success: true});
+      } else {
+        //room is full send a callback to client
+        callback({
+          success: false,
+          message: 'The room ' + roomNumber + 'is fulled',
+        });
+      }
     } else {
       // Send a response to the client indicating that the join event was not successful
       callback({
@@ -47,6 +62,7 @@ io.on('connection', socket => {
       });
     }
   });
+  //listen emit from client and send players array
   socket.on('getPlayers', callback => {
     let gameState = gameStates[socket.data.roomNumber];
     if (gameState) {
@@ -55,11 +71,7 @@ io.on('connection', socket => {
       callback({success: false, message: 'The room does not exist.'});
     }
   });
-  // When a player makes an action  update the game state accordingly
-  socket.on('action', (action, roomNumber) => {
-    // Get the game state for the specified room
-    const gameState = gameStates[roomNumber];
-  });
+
   //disconnect handles termination due to the reason of quit the game or loss internet etc.(socket is closed)
   socket.on('disconnect', () => {
     if (socket.data.roomNumber) {

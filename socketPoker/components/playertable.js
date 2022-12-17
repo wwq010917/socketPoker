@@ -2,11 +2,16 @@ import {View, Text, FlatList, StyleSheet} from 'react-native';
 import React, {useState, useContext} from 'react';
 import {SocketContext} from '../screens/home';
 const PlayerTable = () => {
+  // Retrieve the socket connection from the React context
   const socket = useContext(SocketContext);
 
-  socket.emit();
+  // Set up a state variable called "players" with an initial value of an empty array
   const [players, setPlayers] = useState([]);
+
+  // Send a message called "getPlayers" over the socket connection,
+  // and provide a callback function to be executed when a response is received
   socket.emit('getPlayers', response => {
+    // Update the state variable with the "players" data received in the response
     setPlayers(response.players);
   });
   const renderSeparator = () => {
