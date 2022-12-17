@@ -1,12 +1,18 @@
-import React from 'react';
+import React, {useState, useContext} from 'react';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {faArrowLeft, faGear} from '@fortawesome/free-solid-svg-icons';
 import {StyleSheet, View, TouchableOpacity} from 'react-native';
+import {SocketContext} from '../screens/home';
 const Header = ({navigation}) => {
+  const socket = useContext(SocketContext);
   return (
     <View style={styles.header}>
       <View style={styles.back}>
-        <TouchableOpacity onPress={() => navigation.navigate('Home')}>
+        <TouchableOpacity
+          onPress={() => {
+            socket.emit('disconnected');
+            navigation.navigate('Home');
+          }}>
           <FontAwesomeIcon icon={faArrowLeft} size={40} style={styles.icon} />
         </TouchableOpacity>
       </View>

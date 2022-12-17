@@ -1,18 +1,14 @@
 import {View, Text, FlatList, StyleSheet} from 'react-native';
-import React, {useState} from 'react';
+import React, {useState, useContext} from 'react';
+import {SocketContext} from '../screens/home';
 const PlayerTable = () => {
-  const [players, setPlayers] = useState([
-    {name: 'Player1', total: 1000, current: 100, pos: 'BTN', key: '1'},
-    {name: 'Player2', total: 1000, current: 100, pos: 'SB', key: '2'},
-    {name: 'Player3', total: 1000, current: 100, pos: 'BB', key: '3'},
-    {name: 'Player4', total: 1000, current: 100, pos: '', key: '4'},
-    {name: 'Player5', total: 1000, current: 100, pos: '', key: '5'},
-    {name: 'Player6', total: 1000, current: 100, pos: '', key: '6'},
-    {name: 'Player7', total: 1000, current: 100, pos: '', key: '7'},
-    {name: 'Player8', total: 1000, current: 100, pos: '', key: '8'},
-    {name: 'Player9', total: 1000, current: 100, pos: '', key: '9'},
-  ]);
+  const socket = useContext(SocketContext);
 
+  socket.emit();
+  const [players, setPlayers] = useState([]);
+  socket.emit('getPlayers', response => {
+    setPlayers(response.players);
+  });
   const renderSeparator = () => {
     return (
       <View

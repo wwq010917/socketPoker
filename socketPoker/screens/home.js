@@ -1,16 +1,17 @@
-import React, {useState} from 'react';
+import React, {useState, createContext, useContext} from 'react';
 import {StyleSheet, Text, View, Button, Modal, Alert} from 'react-native';
 import {TextInput} from 'react-native-gesture-handler';
 import io from 'socket.io-client';
-global.socket = io('http://10.0.2.2:3000');
-
+export const SocketContext = createContext(io('http://10.0.2.2:3000'));
 export default function Home({navigation}) {
+  const socket = useContext(SocketContext);
+  // console.log(socket);
   const [isHostGamePressed, setIsHostGamePressed] = useState(false);
   const [modalOneVisible, setModalOneVisible] = useState(false);
   const [Name, onChangeText] = useState('');
   const nameRegex = /^[\u4e00-\u9fa5a-zA-Z0-9]{1,8}$/;
   const [roomNumber, onChangeNumber] = useState('1234');
-  let roomName;
+
   const validateName = name => {
     return nameRegex.test(name);
   };
@@ -26,13 +27,9 @@ export default function Home({navigation}) {
       return; // Return early to exit the function
     }
     setModalOneVisible(false);
-    roomName = Math.floor(Math.random() * 10000);
-    global.roomName = roomName;
-    socket.on('connect', () => {
-      Alert.alert('Success', 'Connect to the server', [{text: 'OK'}]);
-      // When the client connects, send a 'join' event with the player's name and the room name
-      socket.emit('create', Name, roomName);
-    });
+
+    //global.roomNumber = roomNumber;
+    socket.emit('create', Name);
     navigation.navigate('Game');
   };
   const handleJoinPress = async () => {
@@ -55,12 +52,16 @@ export default function Home({navigation}) {
     }
     // Return early to exit the function
     setModalOneVisible(false);
-    socket.on('connect', () => {
-      Alert.alert('Success', 'Connect to the server', [{text: 'OK'}]);
-      // When the client connects, send a 'join' event with the player's name and the room name
-      socket.emit('join', Name, roomNumber);
+    // When the client connects, send a 'join' event with the player's name and the room name
+    socket.emit('join', Name, roomNumber, response => {
+      if (response.success) {
+        // The join event was successful
+        navigation.navigate('Game');
+      } else {
+        // The join event was not successful
+        Alert.alert('Error', response.message, [{text: 'OK'}]);
+      }
     });
-    navigation.navigate('Game');
   };
   return (
     <View style={styles.HomeContainer}>

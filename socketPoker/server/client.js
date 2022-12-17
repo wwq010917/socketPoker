@@ -2,15 +2,17 @@ const io = require('socket.io-client');
 
 const socket = io('http://localhost:3000');
 
-let roomName; // Store the room name in a variable so we can access it in the 'disconnect' event handler
+let roomNumber; // Store the room name in a variable so we can access it in the 'disconnect' event handler
 
 socket.on('connect', () => {
   console.log('trying');
   // When the client connects, send a 'join' event with the player's name and the room name
   playerName = 'player1';
-  roomName = 'room1';
-  socket.emit('create', playerName, roomName);
-  //socket.emit('disconnected', roomName);
+  roomNumber = 'room1';
+  socket.emit('join', playerName, roomNumber, response => {
+    console.log(response.success);
+  });
+  //socket.emit('disconnected', roomNumber);
 });
 
 socket.on('state', (gameState, room) => {
@@ -24,6 +26,6 @@ socket.on('action', (action, room) => {
 });
 
 socket.on('disconnect', () => {
-  console.log(roomName);
+  //console.log(roomNumber);
   console.log('Disconnected from the server');
 });
