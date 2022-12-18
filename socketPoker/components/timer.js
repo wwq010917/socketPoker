@@ -18,7 +18,7 @@ const Timer = () => {
 
   return (
     <View>
-      <Text>{time}</Text>
+      <Text style={{fontSize: 30}}>{time}</Text>
     </View>
   );
 };
