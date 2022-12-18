@@ -14,9 +14,7 @@ const ReadyButton = () => {
   const handleReady = async () => {
     setReadyState(false);
     setUnreadyState(true);
-    socket.emit('ready', response => {
-      console.log(response.success);
-    });
+    socket.emit('ready', response => {});
   };
 
   const handleUnready = async () => {

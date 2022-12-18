@@ -2,6 +2,12 @@ import React, {useState, useContext} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import {SocketContext} from '../screens/home';
 const ControlButton = () => {
+  const [squareButtons, setSquareButtons] = useState({
+    first: 'FOLD',
+    second: 'RAISE',
+    third: 'CHECK',
+    key: '1',
+  });
   return (
     <View>
       <View style={styles.roundButtons}>

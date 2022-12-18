@@ -5,6 +5,7 @@ import io from 'socket.io-client';
 export const SocketContext = createContext(io('http://10.0.2.2:3000'));
 export default function Home({navigation}) {
   const socket = useContext(SocketContext);
+
   // Declare state variables using the useState hook
   const [isHostGamePressed, setIsHostGamePressed] = useState(false);
   const [modalOneVisible, setModalOneVisible] = useState(false);

@@ -17,7 +17,7 @@ function createRoom(gameStates, socket, playerName) {
   // If there is no game state for the room, create a new one
   gameState = new Room(roomNumber);
   gameState.players[playerName] = new playerStatus(playerName, socket.id);
-  socket.join(roomNumber);
+  socket.join(roomNumber.toString());
   socket.data.playerName = playerName;
   socket.data.roomNumber = roomNumber;
   gameStates[roomNumber] = gameState;

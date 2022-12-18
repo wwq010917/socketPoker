@@ -1,3 +1,9 @@
+class card {
+  constructor(number, suit) {
+    this.number = number;
+    this.suit = suit;
+  }
+}
 function getFlop(room) {
   const cards = [
     'SA',
@@ -55,7 +61,7 @@ function getFlop(room) {
   ];
   //console.log(room.currentStatus);
 
-  for (i = 1; i <= room.player.length * 2; i++) {
+  for (i = 1; i <= Object.keys(room.players).length * 2; i++) {
     n = Math.floor(Math.random() * cards.length);
     var newCard;
     if (cards[n][0] == 'S') {

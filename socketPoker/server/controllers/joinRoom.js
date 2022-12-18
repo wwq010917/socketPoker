@@ -15,7 +15,7 @@ function joinRoom(gameStates, playerName, roomNumber, socket, callback) {
       }
       console.log(playerName + ' has joined the room ' + roomNumber + '\n');
       gameState.players[playerName] = new playerStatus(playerName, socket.id);
-      socket.join(roomNumber);
+      socket.join(roomNumber.toString());
       socket.data.playerName = playerName;
       socket.data.roomNumber = roomNumber;
       gameStates[roomNumber] = gameState;

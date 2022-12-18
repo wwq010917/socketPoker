@@ -15,10 +15,8 @@ const PlayerTable = () => {
     setPlayers(response.players);
   });
 
-  socket.on('wait', state => {
-    console.log('listen');
-    if (state) {
-      console.log('listen true');
+  socket.on('wait', success => {
+    if (success == true) {
       socket.emit('start');
     }
   });

@@ -7,13 +7,6 @@ import PrivateArea from '../components/privateArea';
 import ReadyButton from '../components/readyButton';
 import ControlButton from '../components/controlButtons';
 export default function Game({navigation}) {
-  const [squareButtons, setSquareButtons] = useState({
-    first: 'FOLD',
-    second: 'RAISE',
-    third: 'CHECK',
-    key: '1',
-  });
-
   return (
     <View style={styles.container}>
       <Header navigation={navigation} />
@@ -47,5 +40,6 @@ const styles = StyleSheet.create({
 
   bodyRight: {
     flexDirection: 'column',
+    padding: 1,
   },
 });

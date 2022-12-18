@@ -6,12 +6,7 @@ const {joinRoom} = require('./controllers/joinRoom');
 const {getFlop} = require('./controllers/getFlop');
 const {ready, unready} = require('./controllers/ready');
 const {disconnect} = require('./controllers/disconnect');
-class card {
-  constructor(number, suit) {
-    this.number = number;
-    this.suit = suit;
-  }
-}
+
 // Keep track of the game state for each room
 const gameStates = {};
 let timer;
@@ -25,6 +20,10 @@ io.on('connection', socket => {
     joinRoom(gameStates, playerName, roomNumber, socket, callback);
   });
   //listen emit from client and send players array
+  socket.on('getRoomNumber', callback => {
+    //console.log(socket.data.roomNumber);
+    callback({roomNumber: socket.data.roomNumber});
+  });
   socket.on('getPlayers', callback => {
     let gameState = gameStates[socket.data.roomNumber];
     if (gameState) {
@@ -37,21 +36,25 @@ io.on('connection', socket => {
     }
   });
   socket.on('getready', callback => {
-    const playerName = socket.data.playerName;
-    console.log(playerName);
-    const roomNumber = socket.data.roomNumber;
-    let gameState = gameStates[roomNumber];
-    callback({ready: gameState.players[playerName].readyState});
+    let gameState = gameStates[socket.data.roomNumber];
+    if (gameState) {
+      const playerName = socket.data.playerName;
+      callback({ready: gameState.players[playerName].readyState});
+    }
   });
   socket.on('ready', callback => {
-    ready(gameStates, socket, callback);
+    ready(gameStates, socket, callback, io);
   });
   socket.on('unready', () => {
-    unready(gameStates, socket);
+    unready(gameStates, socket, io);
   });
-  socket.on('start', () => {
-    const result = gameStates[socket.data.roomNumber];
-    console.log('start Game');
+  socket.on('checkWaiting', callback => {
+    //console.log(gameStates[socket.data.playerName]);
+    callback({waiting: gameStates[socket.data.roomNumber].waiting});
+  });
+
+  socket.on('start', success => {
+    var result = gameStates[socket.data.roomNumber];
     // generate a button
     if (!result.setPositions) {
       // Get an array of player keys
@@ -94,7 +97,7 @@ io.on('connection', socket => {
       result.gameStage = 'Preflop';
       result.winner = null;
       result = getFlop(result);
-      console.log(result);
+      // console.log(result);
     }
   });
   //disconnect handles termination due to the reason of quit the game or loss internet etc.(socket is closed)
