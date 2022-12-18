@@ -4,17 +4,26 @@ import {faArrowLeft, faGear} from '@fortawesome/free-solid-svg-icons';
 import {StyleSheet, View, TouchableOpacity, Text} from 'react-native';
 import {SocketContext} from '../screens/home';
 import Timer from './timer';
+
 const Header = ({navigation}) => {
   const socket = useContext(SocketContext);
   const [roomNumber, setNumber] = useState(0);
   const [waiting, setWaiting] = useState(false);
   const [time, setTime] = useState(5);
-  socket.on('timer', wait => {
-    setWaiting(wait);
-  });
+
+  useEffect(() => {
+    socket.on('timer', wait => {
+      setWaiting(wait);
+    });
+  }, [waiting]); // the empty array ensures that the effect only runs once
+
+  useEffect(() => {
+    socket.on('countdown', count => {
+      setTime(count);
+    });
+  }, [time]); // the empty array ensures that the effect only runs once
 
   socket.emit('getRoomNumber', response => {
-    // console.log('getRomNumber');
     setNumber(response.roomNumber);
   });
 
@@ -36,7 +45,7 @@ const Header = ({navigation}) => {
       )}
       {waiting && (
         <View>
-          <Timer />
+          <Text style={{fontSize: 30}}>{time}</Text>
         </View>
       )}
 
