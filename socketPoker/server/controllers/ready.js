@@ -22,6 +22,7 @@ function ready(gameStates, socket, callback, io) {
     ) {
       let countdown = 5;
       timer = setInterval(() => {
+        //io socket
         io.in(socket.data.roomNumber.toString()).emit('timer', true);
         io.in(socket.data.roomNumber.toString()).emit('countdown', countdown);
         countdown -= 1;

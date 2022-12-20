@@ -10,7 +10,7 @@ const Header = ({navigation}) => {
   const [roomNumber, setNumber] = useState(0);
   const [waiting, setWaiting] = useState(false);
   const [time, setTime] = useState(5);
-
+  const [passed, setPassed] = useState(false);
   useEffect(() => {
     socket.on('timer', wait => {
       setWaiting(wait);
@@ -18,8 +18,12 @@ const Header = ({navigation}) => {
   }, [waiting]); // the empty array ensures that the effect only runs once
 
   useEffect(() => {
+    //
     socket.on('countdown', count => {
       setTime(count);
+      if (count == 0) {
+        setPassed(true);
+      }
     });
   }, [time]); // the empty array ensures that the effect only runs once
 
@@ -43,7 +47,7 @@ const Header = ({navigation}) => {
           <Text style={styles.roomNumber}>{roomNumber}</Text>
         </View>
       )}
-      {waiting && (
+      {waiting && !passed && (
         <View>
           <Text style={{fontSize: 30}}>{time}</Text>
         </View>

@@ -93,6 +93,7 @@ function getFlop(room) {
     cards.splice(n, 1);
   }
   console.log(room.communityCards);
+  console.log(room.playerCards);
   room.currentStatus = 'start';
 
   return room;

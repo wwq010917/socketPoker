@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import {View, Text, Image, StyleSheet} from 'react-native';
 
 const PublicCards = () => {
+  //
   const [publicCards, setPublicCards] = useState([
     {number: 'A', suit: 'Spade', key: '1'},
     {number: '2', suit: 'Club', key: '2'},
@@ -9,7 +10,7 @@ const PublicCards = () => {
     {number: '4', suit: 'Heart', key: '4'},
     {number: '5', suit: 'Spade', key: '5'},
   ]);
-
+  const [gameTurn, setGameTurn] = useState('');
   const cards = {
     Spade: require('../assets/spade.png'),
     Heart: require('../assets/heart.png'),
@@ -19,27 +20,73 @@ const PublicCards = () => {
   return (
     <View>
       <View style={styles.publicCardsTop}>
-        <View style={styles.card}>
-          <Text style={styles.cardNumber}>{publicCards[0].number}</Text>
-          <Image style={styles.suit} source={cards[publicCards[0].suit]} />
+        <View style={styles.cardVertical}>
+          {(gameTurn == 'Flop' ||
+            gameTurn == 'Turn' ||
+            gameTurn == 'River' ||
+            gameTurn == 'Showdown') && (
+            <View>
+              <Text style={styles.cardNumber}>{publicCards[0].number}</Text>
+              <Image
+                style={styles.suitVertical}
+                source={cards[publicCards[0].suit]}
+              />
+            </View>
+          )}
         </View>
-        <View style={styles.card}>
-          <Text style={styles.cardNumber}>{publicCards[1].number}</Text>
-          <Image style={styles.suit} source={cards[publicCards[1].suit]} />
+        <View style={styles.cardVertical}>
+          {(gameTurn == 'Flop' ||
+            gameTurn == 'Turn' ||
+            gameTurn == 'River' ||
+            gameTurn == 'Showdown') && (
+            <View>
+              <Text style={styles.cardNumber}>{publicCards[1].number}</Text>
+              <Image
+                style={styles.suitVertical}
+                source={cards[publicCards[1].suit]}
+              />
+            </View>
+          )}
         </View>
-        <View style={styles.card}>
-          <Text style={styles.cardNumber}>{publicCards[2].number}</Text>
-          <Image style={styles.suit} source={cards[publicCards[2].suit]} />
+        <View style={styles.cardVertical}>
+          {(gameTurn == 'Flop' ||
+            gameTurn == 'Turn' ||
+            gameTurn == 'River' ||
+            gameTurn == 'Showdown') && (
+            <View>
+              <Text style={styles.cardNumber}>{publicCards[2].number}</Text>
+              <Image
+                style={styles.suitVertical}
+                source={cards[publicCards[2].suit]}
+              />
+            </View>
+          )}
         </View>
       </View>
       <View style={styles.publicCardsBot}>
-        <View style={styles.card}>
-          <Text style={styles.cardNumber}>{publicCards[3].number}</Text>
-          <Image style={styles.suit} source={cards[publicCards[3].suit]} />
+        <View style={styles.cardVertical}>
+          {(gameTurn == 'Turn' ||
+            gameTurn == 'River' ||
+            gameTurn == 'Showdown') && (
+            <View>
+              <Text style={styles.cardNumber}>{publicCards[3].number}</Text>
+              <Image
+                style={styles.suitVertical}
+                source={cards[publicCards[3].suit]}
+              />
+            </View>
+          )}
         </View>
-        <View style={styles.card}>
-          <Text style={styles.cardNumber}>{publicCards[4].number}</Text>
-          <Image style={styles.suit} source={cards[publicCards[4].suit]} />
+        <View style={styles.cardVertical}>
+          {(gameTurn == 'River' || gameTurn == 'Showdown') && (
+            <View>
+              <Text style={styles.cardNumber}>{publicCards[4].number}</Text>
+              <Image
+                style={styles.suitVertical}
+                source={cards[publicCards[4].suit]}
+              />
+            </View>
+          )}
         </View>
       </View>
     </View>
@@ -50,6 +97,35 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     paddingLeft: 8,
+  },
+  cardVertical: {
+    height: 100,
+    width: 80,
+    borderWidth: 3,
+    borderRadius: 8,
+    margin: 1,
+  },
+  cardHorizontal: {
+    height: 60,
+    width: 90,
+    borderWidth: 2,
+    borderRadius: 8,
+    marginHorizontal: 1,
+    marginTop: 1,
+  },
+  suitVertical: {
+    position: 'absolute',
+    height: 40,
+    width: 40,
+    top: 30,
+    left: 15,
+  },
+  suitHorizontal: {
+    position: 'absolute',
+    height: 40,
+    width: 40,
+    top: 10,
+    right: 20,
   },
   publicCardsBot: {
     flexDirection: 'row',
