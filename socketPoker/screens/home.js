@@ -34,6 +34,7 @@ export default function Home({navigation}) {
 
     // Emit a 'create' event through the socket connection
     socket.emit('create', Name);
+    global.Name = Name;
     navigation.navigate('Game');
   };
 
@@ -67,6 +68,7 @@ export default function Home({navigation}) {
     socket.emit('join', Name, roomNumber, response => {
       if (response.success) {
         // The join event was successful
+        global.Name = Name;
         navigation.navigate('Game');
       } else {
         // The join event was not successful

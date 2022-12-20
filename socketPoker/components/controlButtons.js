@@ -6,6 +6,10 @@ const ControlButton = () => {
   const [gameTurn, setGameTurn] = useState('');
   const [callState, setCallState] = useState('FRC');
   const [lockButtons, setLockButtons] = useState(true);
+  const [betTurnTemp, setBetTurnTemp] = useState(0);
+  const [totalMoney, setTotalMoney] = useState(0);
+  const [betTurn, setBetTurn] = useState(0);
+  const [slider, setSlider] = useState(false);
   const handleAllin = () => {
     setSelfPlay('Allin');
     setBetTurn(totalMoney + betRound);
@@ -92,7 +96,7 @@ const ControlButton = () => {
     setLockButtons(false);
     setConfirmState(true);
   };
-  const [slider, setSlider] = useState(false);
+
   return (
     <View>
       {slider && (
@@ -135,28 +139,40 @@ const ControlButton = () => {
       {callState == 'FRC' && lockButtons && (
         <View style={styles.squareButtons}>
           <TouchableOpacity onPress={handleFold}>
-            <Text style={styles.sb1}>FOLD</Text>
+            <View style={styles.squareContainer1}>
+              <Text style={styles.font}>FOLD</Text>
+            </View>
           </TouchableOpacity>
 
           <TouchableOpacity onPress={handleRaise}>
-            <Text style={styles.sb2}>RAISE</Text>
+            <View style={styles.squareContainer2}>
+              <Text style={styles.font}>RAISE</Text>
+            </View>
           </TouchableOpacity>
           <TouchableOpacity onPress={handleCall}>
-            <Text style={styles.sb3}>CALL</Text>
+            <View style={styles.squareContainer3}>
+              <Text style={styles.font}>CALL</Text>
+            </View>
           </TouchableOpacity>
         </View>
       )}
       {callState == 'FBC' && lockButtons && (
         <View style={styles.squareButtons}>
           <TouchableOpacity onPress={handleFold}>
-            <Text style={styles.sb1}>FOLD</Text>
+            <View style={styles.squareContainer1}>
+              <Text style={styles.font}>FOLD</Text>
+            </View>
           </TouchableOpacity>
 
           <TouchableOpacity onPress={handleRaise}>
-            <Text style={styles.sb2}>BET</Text>
+            <View style={styles.squareContainer2}>
+              <Text style={styles.font}>BET</Text>
+            </View>
           </TouchableOpacity>
           <TouchableOpacity onPress={handleCheck}>
-            <Text style={styles.sb3}>CHECK</Text>
+            <View style={styles.squareContainer3}>
+              <Text style={styles.font}>CHECK</Text>
+            </View>
           </TouchableOpacity>
         </View>
       )}
@@ -164,12 +180,21 @@ const ControlButton = () => {
   );
 };
 const styles = StyleSheet.create({
+  sliderContainer: {
+    marginLeft: 30,
+    marginTop: 15,
+    marginRight: 30,
+    borderWidth: 3,
+    borderRadius: 10,
+    padding: 6,
+  },
   roundButtons: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     paddingLeft: 50,
-    paddingTop: 5,
+    paddingTop: 20,
     paddingRight: 50,
+    paddingBottom: 5,
   },
 
   oval: {
@@ -189,19 +214,28 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   squareButtons: {
+    height: 50,
+    width: 350,
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'space-around',
     borderRadius: 15,
     borderWidth: 3,
     marginTop: 8,
     marginLeft: 30,
     marginRight: 30,
   },
-
+  squareContainer1: {
+    paddingTop: 10,
+  },
+  squareContainer2: {
+    paddingTop: 10,
+  },
+  squareContainer3: {
+    paddingTop: 10,
+  },
   font: {
     fontSize: 30,
     fontFamily: 'Njal-Bold',
-    padding: 15,
   },
 });
 export default ControlButton;

@@ -1,5 +1,5 @@
 const {getFlop} = require('./getFlop');
-function startGame(gameStates, socket) {
+function startGame(gameStates, socket, io) {
   var result = gameStates[socket.data.roomNumber];
   // generate a button
   if (!result.setPositions) {
@@ -40,10 +40,27 @@ function startGame(gameStates, socket) {
     }
     result.setPositions = true;
     result.largestBet = 10;
-    result.gameStage = 'Preflop';
     result.winner = null;
     result = getFlop(result);
     // console.log(result);
+    var players = new Map(Object.entries(result.players));
+    players = Array.from(players.values());
+    const cardMap = new Map();
+    var cardIndex = 0;
+    for (var i = 0; i < players.length; i++) {
+      if (cardIndex > result.playerCards.length) {
+        break;
+      }
+      const cardArray = new Array();
+      for (var k = 0; k < 2; k++) {
+        cardArray.push(result.playerCards[cardIndex]);
+        cardIndex++;
+      }
+      console.log(players[i].id);
+      console.log(cardArray);
+      io.to(players[i].id.toString()).emit('privateCard', cardArray);
+    }
+    result.playerCards = cardMap;
     gameStates[socket.data.roomNumber] = result;
   }
 }

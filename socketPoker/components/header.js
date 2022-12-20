@@ -3,7 +3,6 @@ import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {faArrowLeft, faGear} from '@fortawesome/free-solid-svg-icons';
 import {StyleSheet, View, TouchableOpacity, Text} from 'react-native';
 import {SocketContext} from '../screens/home';
-import Timer from './timer';
 
 const Header = ({navigation}) => {
   const socket = useContext(SocketContext);

@@ -41,7 +41,12 @@ const PlayerTable = () => {
           renderItem={({item}) => (
             <View style={styles.box}>
               <View style={styles.upperbox}>
-                <Text style={styles.player}> {item.name} </Text>
+                <Text
+                  style={
+                    item.name === global.Name ? styles.self : styles.player
+                  }>
+                  {item.name}
+                </Text>
                 <Text style={styles.pos}>{item.pos} </Text>
               </View>
               <View style={styles.lowerbox}>
@@ -58,6 +63,14 @@ const PlayerTable = () => {
 const styles = StyleSheet.create({
   tableWrapper: {
     flex: 1,
+  },
+  self: {
+    flex: 1,
+    padding: 5,
+    paddingLeft: 0,
+    fontFamily: 'Njal-Bold',
+    fontSize: 25,
+    color: 'red',
   },
   player: {
     flex: 1,

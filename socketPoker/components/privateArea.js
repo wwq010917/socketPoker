@@ -1,6 +1,8 @@
 import {View, Text, StyleSheet, Image} from 'react-native';
-import React, {useState} from 'react';
+import React, {useState, useContext} from 'react';
+import {SocketContext} from '../screens/home';
 const privateArea = () => {
+  const socket = useContext(SocketContext);
   const nativePrivateCards = [
     {number: '', suit: ''},
     {number: '', suit: ''},
@@ -19,6 +21,9 @@ const privateArea = () => {
     Club: require('../assets/club.png'),
   };
   const [pot, setPot] = useState(1000);
+  socket.on('privateCard', card => {
+    setPrivateCards(card);
+  });
   return (
     <View>
       <View

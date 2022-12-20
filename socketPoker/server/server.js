@@ -53,8 +53,9 @@ io.on('connection', socket => {
     callback({waiting: gameStates[socket.data.roomNumber].waiting});
   });
 
-  socket.on('start', success => {
-    startGame(gameStates, socket);
+  socket.on('start', () => {
+    startGame(gameStates, socket, io);
+    //console.log(gameStates[socket.data.roomNumber]);
   });
   //disconnect handles termination due to the reason of quit the game or loss internet etc.(socket is closed)
   socket.on('disconnect', () => {

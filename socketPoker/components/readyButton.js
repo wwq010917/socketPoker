@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
   unready: {
     fontSize: 30,
     fontFamily: 'Njal-Bold',
-    padding: 15,
+    padding: 12,
     paddingLeft: 130,
   },
   unreadyButton: {
