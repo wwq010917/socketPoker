@@ -9,7 +9,6 @@ const {disconnect} = require('./controllers/disconnect');
 
 // Keep track of the game state for each room
 const gameStates = {};
-let timer;
 io.on('connection', socket => {
   // When a new player wants to create a room
   socket.on('create', playerName => {
@@ -66,11 +65,3 @@ io.on('connection', socket => {
     disconnect(gameStates, socket);
   });
 });
-
-// Send the game state for each room to all connected clients every second
-setInterval(() => {
-  Object.keys(gameStates).forEach(roomNumber => {
-    //console.log(gameStates[roomNumber]);
-    io.sockets.in(roomNumber.toString()).emit('state', gameStates[roomNumber]);
-  });
-}, 5000);

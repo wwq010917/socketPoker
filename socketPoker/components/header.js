@@ -3,8 +3,9 @@ import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {faArrowLeft, faGear} from '@fortawesome/free-solid-svg-icons';
 import {StyleSheet, View, TouchableOpacity, Text} from 'react-native';
 import {SocketContext} from '../screens/home';
-
+import {ModalContext} from '../screens/game';
 const Header = ({navigation}) => {
+  const {setModalVisible} = useContext(ModalContext);
   const socket = useContext(SocketContext);
   const [roomNumber, setNumber] = useState(0);
   const [waiting, setWaiting] = useState(false);
@@ -53,7 +54,11 @@ const Header = ({navigation}) => {
       )}
 
       <View style={styles.settings}>
-        <TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => {
+            console.log('feedback');
+            setModalVisible(true);
+          }}>
           <FontAwesomeIcon icon={faGear} size={35} style={styles.icon} />
         </TouchableOpacity>
       </View>

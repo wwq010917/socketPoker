@@ -77,7 +77,7 @@ const styles = StyleSheet.create({
     padding: 5,
     paddingLeft: 0,
     fontFamily: 'Njal-Bold',
-    fontSize: 25,
+    fontSize: 28,
   },
   table: {
     borderWidth: 3,
