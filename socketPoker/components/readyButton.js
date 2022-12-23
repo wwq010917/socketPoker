@@ -1,7 +1,7 @@
 import React, {useState, useContext} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import {SocketContext} from '../screens/home';
-const ReadyButton = () => {
+const ReadyButton = ({gameStart}) => {
   const socket = useContext(SocketContext);
 
   const [unreadyState, setUnreadyState] = useState(false);
@@ -24,14 +24,14 @@ const ReadyButton = () => {
   };
   return (
     <View>
-      {readyState && (
+      {readyState && !gameStart && (
         <View style={styles.readyButton}>
           <TouchableOpacity onPress={handleReady}>
             <Text style={styles.ready}>READY</Text>
           </TouchableOpacity>
         </View>
       )}
-      {unreadyState && (
+      {unreadyState && !gameStart && (
         <View style={styles.unreadyButton}>
           <TouchableOpacity onPress={handleUnready}>
             <Text style={styles.unready}>CANCEL</Text>

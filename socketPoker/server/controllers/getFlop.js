@@ -4,7 +4,7 @@ class card {
     this.suit = suit;
   }
 }
-function getFlop(room) {
+function getFlop(room, io) {
   const cards = [
     'SA',
     'S2',
@@ -94,7 +94,7 @@ function getFlop(room) {
   }
   console.log(room.communityCards);
   console.log(room.playerCards);
-  room.currentStatus = 'start';
+  // room.currentStatus = 'start';
 
   return room;
 }

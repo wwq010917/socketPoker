@@ -7,12 +7,23 @@ import PrivateArea from '../components/privateArea';
 import ReadyButton from '../components/readyButton';
 import ControlButton from '../components/controlButtons';
 import Helper from '../components/Helper';
+import {io} from 'socket.io-client';
+import {SocketContext} from '../screens/home';
+
 export const ModalContext = createContext({
   setModalVisible: () => {},
 });
 export default function Game({navigation}) {
+  const socket = useContext(SocketContext);
   const [modalVisible, setModalVisible] = useState(false);
-
+  const [gameStart, setGameStart] = useState(false);
+  const [currentPlayer, setCurrentPlayer] = useState(false);
+  socket.on('checkStart', response => {
+    setGameStart(response);
+  });
+  socket.on('checkCurrentPlayer', response => {
+    setCurrentPlayer(response);
+  });
   return (
     <ModalContext.Provider value={{setModalVisible}}>
       <View style={modalVisible ? styles.container2 : styles.container}>
@@ -31,7 +42,11 @@ export default function Game({navigation}) {
         </Modal>
         <View style={styles.body}>
           {/* Player Table element */}
-          <Table />
+          <Table
+            gameStart={gameStart}
+            setGameStart={setGameStart}
+            currentPlayer={currentPlayer}
+          />
           <View style={styles.bodyRight}>
             {/* Public cards element */}
             <PublicCards />
@@ -39,8 +54,8 @@ export default function Game({navigation}) {
             <PrivateArea />
           </View>
         </View>
-        <ControlButton />
-        <ReadyButton />
+        <ControlButton currentPlayer={currentPlayer} />
+        <ReadyButton gameStart={gameStart} />
       </View>
     </ModalContext.Provider>
   );

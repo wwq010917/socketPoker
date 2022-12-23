@@ -1,7 +1,9 @@
 import {View, Text, FlatList, StyleSheet} from 'react-native';
 import React, {useState, useContext} from 'react';
 import {SocketContext} from '../screens/home';
-const PlayerTable = () => {
+import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
+import {faCheck} from '@fortawesome/free-solid-svg-icons';
+const PlayerTable = ({gameStart, setGameStart, currentPlayer}) => {
   // Retrieve the socket connection from the React context
   const socket = useContext(SocketContext);
 
@@ -18,6 +20,7 @@ const PlayerTable = () => {
   socket.on('wait', success => {
     if (success == true) {
       socket.emit('start');
+      // setGameStart(true);
     }
   });
   const renderSeparator = () => {
@@ -40,19 +43,33 @@ const PlayerTable = () => {
           ItemSeparatorComponent={renderSeparator}
           renderItem={({item}) => (
             <View style={styles.box}>
-              <View style={styles.upperbox}>
-                <Text
-                  style={
-                    item.name === global.Name ? styles.self : styles.player
-                  }>
-                  {item.name}
-                </Text>
-                <Text style={styles.pos}>{item.pos} </Text>
+              <View>
+                <View style={styles.upperbox}>
+                  <Text
+                    style={
+                      item.name === global.Name ? styles.self : styles.player
+                    }>
+                    {item.name}
+                  </Text>
+                  <Text style={styles.pos}>{item.pos} </Text>
+                </View>
+                <View style={styles.lowerbox}>
+                  <Text style={styles.smallText}>{item.total} </Text>
+                  <Text style={styles.smallText}>{item.current} </Text>
+                </View>
               </View>
-              <View style={styles.lowerbox}>
-                <Text style={styles.smallText}>{item.total} </Text>
-                <Text style={styles.smallText}>{item.current} </Text>
-              </View>
+              {item.readyState && !gameStart && (
+                <View style={styles.readyOverlay}>
+                  <FontAwesomeIcon
+                    icon={faCheck}
+                    size={40}
+                    style={styles.check}
+                  />
+                </View>
+              )}
+              {item.name == currentPlayer && gameStart && (
+                <View style={styles.readyOverlay}></View>
+              )}
             </View>
           )}
         />
@@ -82,7 +99,27 @@ const styles = StyleSheet.create({
   table: {
     borderWidth: 3,
   },
+  box: {
+    flex: 1,
+  },
+  readyOverlay: {
+    flex: 1,
+    position: 'absolute',
+    left: 0,
+    top: 0,
+    opacity: 0.5,
+    backgroundColor: 'green',
+    height: '100%',
+    width: '100%',
+  },
 
+  check: {
+    flex: 1,
+    marginLeft: 40,
+    marginTop: 7,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   upperbox: {
     flexDirection: 'row',
     borderWidth: 1,

@@ -1,10 +1,20 @@
-import React, {useState, useContext} from 'react';
+import React, {useState, useContext, useEffect} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import {SocketContext} from '../screens/home';
 import {Slider} from '@miblanchard/react-native-slider';
-const ControlButton = () => {
+const ControlButton = currentPlayer => {
+  useEffect(() => {
+    console.log(currentPlayer.currentPlayer);
+    if (currentPlayer.currentPlayer == global.Name) {
+      setCallState('FRC');
+    } else {
+      setCallState(false);
+    }
+    console.log(callState);
+  }, [currentPlayer]);
+
   const [gameTurn, setGameTurn] = useState('');
-  const [callState, setCallState] = useState('FRC');
+  const [callState, setCallState] = useState(false);
   const [lockButtons, setLockButtons] = useState(true);
   const [betTurnTemp, setBetTurnTemp] = useState(0);
   const [totalMoney, setTotalMoney] = useState(0);
@@ -111,7 +121,7 @@ const ControlButton = () => {
           />
         </View>
       )}
-      {!slider && (
+      {!slider && callState && (
         <View style={styles.roundButtons}>
           <TouchableOpacity onPress={handleRaiseMin}>
             <View style={styles.oval}>

@@ -21,6 +21,7 @@ function startGame(gameStates, socket, io) {
       result.largestRaise = 10;
       result.pot += 10;
       result.currentPlayer = result.players[playerKeys[sb]];
+      io.emit('checkCurrentPlayer', result.currentPlayer.name);
     } else {
       // Set the small blind and big blind player's positions
       const sb = (btn + 1) % playerKeys.length;
@@ -37,11 +38,13 @@ function startGame(gameStates, socket, io) {
       // Set the current player as the player after the big blind
       const cur = (bb + 1) % playerKeys.length;
       result.currentPlayer = result.players[playerKeys[cur]];
+      io.emit('checkCurrentPlayer', result.currentPlayer.name);
     }
     result.setPositions = true;
     result.largestBet = 10;
     result.winner = null;
     result = getFlop(result);
+    io.emit('checkStart', true);
     // console.log(result);
     var players = new Map(Object.entries(result.players));
     players = Array.from(players.values());

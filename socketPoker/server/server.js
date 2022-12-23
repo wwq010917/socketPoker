@@ -8,6 +8,8 @@ const {ready, unready, disconnect} = require('./controllers/ready');
 
 // Keep track of the game state for each room
 const gameStates = {};
+
+console.log('Server starting...');
 io.on('connection', socket => {
   // When a new player wants to create a room
   socket.on('create', playerName => {

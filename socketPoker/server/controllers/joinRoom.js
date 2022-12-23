@@ -9,7 +9,8 @@ function joinRoom(gameStates, playerName, roomNumber, socket, callback) {
       if (gameState.players[playerName]) {
         callback({
           success: false,
-          message: 'There is already ' + playerName + 'exist in the room',
+          message:
+            'The player name "' + playerName + '" already exists in the room',
         });
         return;
       }
