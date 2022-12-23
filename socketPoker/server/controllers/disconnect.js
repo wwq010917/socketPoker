@@ -3,6 +3,8 @@ function disconnect(gameStates, socket) {
     console.log(socket.data.playerName + ' is disconnected');
     const gameState = gameStates[socket.data.roomNumber];
     if (gameState) {
+      gameState.waiting = true;
+      gameStates[socket.data.roomNumber] = gameState;
       if (gameState.players) {
         // Check if the player with the specified id exists in the object
         if (gameState.players[socket.data.playerName]) {

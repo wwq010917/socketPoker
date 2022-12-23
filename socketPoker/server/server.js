@@ -4,8 +4,7 @@ const {playerStatus} = require('./class/playerStatus.js');
 const {createRoom} = require('./controllers/createRoom');
 const {joinRoom} = require('./controllers/joinRoom');
 const {startGame} = require('./controllers/startgame');
-const {ready, unready} = require('./controllers/ready');
-const {disconnect} = require('./controllers/disconnect');
+const {ready, unready, disconnect} = require('./controllers/ready');
 
 // Keep track of the game state for each room
 const gameStates = {};
@@ -58,10 +57,10 @@ io.on('connection', socket => {
   });
   //disconnect handles termination due to the reason of quit the game or loss internet etc.(socket is closed)
   socket.on('disconnect', () => {
-    disconnect(gameStates, socket);
+    disconnect(gameStates, socket, io);
   });
   //disconnected handles when user press the back arrow and go back to their home page(does not close the socket)
   socket.on('disconnected', () => {
-    disconnect(gameStates, socket);
+    disconnect(gameStates, socket, io);
   });
 });

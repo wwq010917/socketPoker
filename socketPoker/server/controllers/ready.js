@@ -58,5 +58,30 @@ function unready(gameStates, socket, io) {
     clearTimeout(timer);
   }
 }
+function disconnect(gameStates, socket, io) {
+  if (socket.data.roomNumber) {
+    console.log(socket.data.playerName + ' is disconnected');
+    const gameState = gameStates[socket.data.roomNumber];
+    if (gameState) {
+      gameState.waiting = true;
+      io.in(socket.data.roomNumber.toString()).emit('timer', false);
+      // Clear the timer when a player presses the "unready" button
+      clearTimeout(timer);
+      gameStates[socket.data.roomNumber] = gameState;
+      if (gameState.players) {
+        // Check if the player with the specified id exists in the object
+        if (gameState.players[socket.data.playerName]) {
+          // If so, delete the player from the object
+          delete gameState.players[socket.data.playerName];
 
-module.exports = {ready, unready};
+          // Check if there are any players left in the game
+          if (Object.keys(gameState.players).length === 0) {
+            // If not, delete the game state
+            delete gameStates[socket.data.roomNumber];
+          }
+        }
+      }
+    }
+  }
+}
+module.exports = {ready, unready, disconnect};
