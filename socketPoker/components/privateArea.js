@@ -1,7 +1,7 @@
 import {View, Text, StyleSheet, Image} from 'react-native';
 import React, {useState, useContext} from 'react';
 import {SocketContext} from '../screens/home';
-const privateArea = () => {
+const privateArea = ({betRound, pot, totalMoney, betTurn, betDiff}) => {
   const socket = useContext(SocketContext);
   const nativePrivateCards = [
     {number: '', suit: ''},
@@ -10,17 +10,14 @@ const privateArea = () => {
   const [privateCards, setPrivateCards] = useState(nativePrivateCards);
   const [handRank, setHandRank] = useState('High Card');
   const [allHandRanks, setAllHandRanks] = useState(false);
-  const [totalMoney, setTotalMoney] = useState(0);
-  const [betRound, setBetRound] = useState(0);
-  const [betTurn, setBetTurn] = useState(0);
-  const [betDiff, setBetDiff] = useState(0);
+
   const cards = {
     Spade: require('../assets/spade.png'),
     Heart: require('../assets/heart.png'),
     Diamond: require('../assets/diamond.png'),
     Club: require('../assets/club.png'),
   };
-  const [pot, setPot] = useState(1000);
+
   socket.on('privateCard', card => {
     setPrivateCards(card);
   });

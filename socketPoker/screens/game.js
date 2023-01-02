@@ -18,11 +18,20 @@ export default function Game({navigation}) {
   const [modalVisible, setModalVisible] = useState(false);
   const [gameStart, setGameStart] = useState(false);
   const [currentPlayer, setCurrentPlayer] = useState(false);
+  const [betRound, setBetRound] = useState(0);
+  const [pot, setPot] = useState(1000);
+  const [totalMoney, setTotalMoney] = useState(0);
+  const [betTurn, setBetTurn] = useState(0);
+  const [betDiff, setBetDiff] = useState(0);
   socket.on('checkStart', response => {
     setGameStart(response);
   });
   socket.on('checkCurrentPlayer', response => {
     setCurrentPlayer(response);
+  });
+  socket.on('getTotal', response => {
+    setTotalMoney(response);
+    console.log(response);
   });
   return (
     <ModalContext.Provider value={{setModalVisible}}>
@@ -51,10 +60,28 @@ export default function Game({navigation}) {
             {/* Public cards element */}
             <PublicCards />
             {/* Private cards element */}
-            <PrivateArea />
+            <PrivateArea
+              betRound={betRound}
+              pot={pot}
+              totalMoney={totalMoney}
+              betTurn={betTurn}
+              betDiff={betDiff}
+            />
           </View>
         </View>
-        <ControlButton currentPlayer={currentPlayer} />
+        <ControlButton
+          currentPlayer={currentPlayer}
+          betRound={betRound}
+          setBetRound={setBetRound}
+          pot={pot}
+          setPot={setPot}
+          totalMoney={totalMoney}
+          setTotalMoney={setTotalMoney}
+          betTurn={betTurn}
+          setBetTurn={setBetTurn}
+          betDiff={betDiff}
+          setBetDiff={setBetDiff}
+        />
         <ReadyButton gameStart={gameStart} />
       </View>
     </ModalContext.Provider>

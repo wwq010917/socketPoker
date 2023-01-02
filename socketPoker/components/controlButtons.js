@@ -2,10 +2,22 @@ import React, {useState, useContext, useEffect} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import {SocketContext} from '../screens/home';
 import {Slider} from '@miblanchard/react-native-slider';
-const ControlButton = currentPlayer => {
+const ControlButton = ({
+  currentPlayer,
+  betRound,
+  setBetRound,
+  pot,
+  setPot,
+  totalMoney,
+  setTotalMoney,
+  betTurn,
+  setBetTurn,
+  betDiff,
+  setBetDiff,
+}) => {
   useEffect(() => {
-    console.log(currentPlayer.currentPlayer);
-    if (currentPlayer.currentPlayer == global.Name) {
+    console.log(currentPlayer);
+    if (currentPlayer == global.Name) {
       setCallState('FRC');
     } else {
       setCallState(false);
@@ -17,9 +29,20 @@ const ControlButton = currentPlayer => {
   const [callState, setCallState] = useState(false);
   const [lockButtons, setLockButtons] = useState(true);
   const [betTurnTemp, setBetTurnTemp] = useState(0);
-  const [totalMoney, setTotalMoney] = useState(0);
-  const [betTurn, setBetTurn] = useState(0);
   const [slider, setSlider] = useState(false);
+  const [largestBet, setLargestBet] = useState(0);
+  const [largestRaise, setLargestRaise] = useState(0);
+  const [selfPlay, setSelfPlay] = useState(false);
+  const [confirmState, setConfirmState] = useState(false);
+
+  const socket = useContext(SocketContext);
+  socket.on('getBetData', response => {
+    setLargestBet(response.largestBet);
+    setLargestRaise(response.largestRaise);
+    setPot(response.pot);
+    console.log(response);
+  });
+
   const handleAllin = () => {
     setSelfPlay('Allin');
     setBetTurn(totalMoney + betRound);
@@ -34,10 +57,10 @@ const ControlButton = currentPlayer => {
   };
   const handleCall = () => {
     //if this happens then must go allin, block the button
-    if (totalMoney + betRound <= roomStatus.data.largestBet) {
+    if (totalMoney + betRound <= largestBet) {
       return false;
     }
-    var bet = roomStatus.data.largestBet;
+    var bet = largestBet;
     setSelfPlay('Call');
     setBetTurn(bet);
     setBetDiff(bet - betRound);
@@ -45,10 +68,10 @@ const ControlButton = currentPlayer => {
     setConfirmState(true);
   };
   const handleRaise = async () => {
-    if (totalMoney + betRound <= roomStatus.data.largestBet) {
+    if (totalMoney + betRound <= largestBet) {
       return false;
     }
-    var bet = roomStatus.data.largestRaise + roomStatus.data.largestBet;
+    var bet = largestRaise + largestBet;
     setSelfPlay('Call');
     setBetTurn(bet);
     setBetDiff(bet - betRound);
@@ -58,10 +81,10 @@ const ControlButton = currentPlayer => {
     setConfirmState(true);
   };
   const handleRaiseMin = async () => {
-    if (totalMoney + betRound <= roomStatus.data.largestBet) {
+    if (totalMoney + betRound <= largestBet) {
       return false;
     }
-    var bet = roomStatus.data.largestRaise + roomStatus.data.largestBet;
+    var bet = largestRaise + largestBet;
     setSelfPlay('Call');
     setBetTurn(bet);
     setBetDiff(bet - betRound);
@@ -70,12 +93,10 @@ const ControlButton = currentPlayer => {
   };
 
   const handleRaiseHalf = async () => {
-    if (totalMoney + betRound <= roomStatus.data.largestBet) {
+    if (totalMoney + betRound <= largestBet) {
       return false;
     }
-    var bet =
-      roomStatus.data.largestBet +
-      Math.floor((roomStatus.data.largestBet + roomStatus.data.pot) / 2);
+    var bet = largestBet + Math.floor((largestBet + data.pot) / 2);
     setSelfPlay('Call');
     setBetTurn(bet);
     setBetDiff(bet - betRound);
@@ -83,15 +104,12 @@ const ControlButton = currentPlayer => {
     setConfirmState(true);
   };
   const handleRaiseFull = async () => {
-    if (totalMoney + betRound <= roomStatus.data.largestBet) {
+    if (totalMoney + betRound <= largestBet) {
       return false;
-    } else if (
-      totalMoney + betRound <=
-      roomStatus.data.largestBet * 2 + roomStatus.data.pot
-    ) {
+    } else if (totalMoney + betRound <= largestBet * 2 + pot) {
       return false;
     }
-    var bet = roomStatus.data.largestBet * 2 + roomStatus.data.pot;
+    var bet = largestBet * 2 + pot;
     setSelfPlay('Call');
     setBetTurn(bet);
     setBetDiff(bet - betRound);
@@ -105,6 +123,34 @@ const ControlButton = currentPlayer => {
     setBetTurn(0);
     setLockButtons(false);
     setConfirmState(true);
+  };
+
+  const handleConfirm = async () => {
+    if (betTurn == totalMoney) {
+      setSelfPlay('Allin');
+    }
+    socket.emit('endTurn', {
+      roomNumber: global.roomNumber,
+      userName: global.name,
+      currentPlay: selfPlay,
+      currentRaise: betTurn,
+    });
+
+    //add function to communicate with server here
+    setConfirmState(false);
+    setLockButtons(true);
+    setSlider(false);
+    setCallState(false);
+    setBetRound(betTurn);
+    setBetTurn(0);
+    setBetDiff(0);
+  };
+  const handleCancel = async () => {
+    setSlider(false);
+    setLockButtons(true);
+    setConfirmState(false);
+    setBetTurn(0);
+    setBetDiff(0);
   };
 
   return (
@@ -186,6 +232,16 @@ const ControlButton = currentPlayer => {
           </TouchableOpacity>
         </View>
       )}
+      {confirmState && (
+        <View style={styles.squareButtons}>
+          <TouchableOpacity onPress={handleConfirm}>
+            <Text style={styles.confirm}>CONFIRM</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={handleCancel}>
+            <Text style={styles.cancel}>CANCEL</Text>
+          </TouchableOpacity>
+        </View>
+      )}
     </View>
   );
 };
@@ -224,7 +280,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   squareButtons: {
-    height: 50,
+    height: 60,
     width: 350,
     flexDirection: 'row',
     justifyContent: 'space-around',
@@ -246,6 +302,16 @@ const styles = StyleSheet.create({
   font: {
     fontSize: 30,
     fontFamily: 'Njal-Bold',
+  },
+  confirm: {
+    fontSize: 30,
+    fontFamily: 'Njal-Bold',
+    padding: 15,
+  },
+  cancel: {
+    fontSize: 30,
+    fontFamily: 'Njal-Bold',
+    padding: 15,
   },
 });
 export default ControlButton;

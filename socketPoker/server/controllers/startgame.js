@@ -45,7 +45,13 @@ function startGame(gameStates, socket, io) {
     result.winner = null;
     result = getFlop(result);
     io.emit('checkStart', true);
-    // console.log(result);
+    io.emit('getBetData', {
+      largestBet: result.largestBet,
+      largestRaise: result.largestRaise,
+      pot: result.pot,
+    });
+
+    console.log(result);
     var players = new Map(Object.entries(result.players));
     players = Array.from(players.values());
     const cardMap = new Map();
@@ -65,6 +71,10 @@ function startGame(gameStates, socket, io) {
     }
     result.playerCards = cardMap;
     gameStates[socket.data.roomNumber] = result;
+    for (var i = 0; i < players.length; i++) {
+      io.to(players[i].id.toString()).emit('getTotal', players[i].total);
+      console.log(players[i].total);
+    }
   }
 }
 module.exports = {startGame};
