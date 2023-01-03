@@ -21,6 +21,14 @@ function startGame(gameStates, socket, io) {
       result.largestRaise = 10;
       result.pot += 10;
       result.currentPlayer = result.players[playerKeys[sb]];
+      result.largestBet = 10;
+      result.gameTurn = 'Preflop';
+      io.emit('getTurn', result.gameTurn);
+      io.emit('getBetData', {
+        largestBet: result.largestBet,
+        largestRaise: result.largestRaise,
+        pot: result.pot,
+      });
       io.emit('checkCurrentPlayer', result.currentPlayer.name);
     } else {
       // Set the small blind and big blind player's positions
@@ -38,18 +46,21 @@ function startGame(gameStates, socket, io) {
       // Set the current player as the player after the big blind
       const cur = (bb + 1) % playerKeys.length;
       result.currentPlayer = result.players[playerKeys[cur]];
+      result.largestBet = 10;
+      result.gameTurn = 'Preflop';
+      io.emit('getTurn', result.gameTurn);
+      io.emit('getBetData', {
+        largestBet: result.largestBet,
+        largestRaise: result.largestRaise,
+        pot: result.pot,
+      });
       io.emit('checkCurrentPlayer', result.currentPlayer.name);
     }
     result.setPositions = true;
-    result.largestBet = 10;
+
     result.winner = null;
     result = getFlop(result);
     io.emit('checkStart', true);
-    io.emit('getBetData', {
-      largestBet: result.largestBet,
-      largestRaise: result.largestRaise,
-      pot: result.pot,
-    });
 
     console.log(result);
     var players = new Map(Object.entries(result.players));
@@ -73,6 +84,7 @@ function startGame(gameStates, socket, io) {
     gameStates[socket.data.roomNumber] = result;
     for (var i = 0; i < players.length; i++) {
       io.to(players[i].id.toString()).emit('getTotal', players[i].total);
+      io.to(players[i].id.toString()).emit('getCurrent', players[i].current);
       console.log(players[i].total);
     }
   }

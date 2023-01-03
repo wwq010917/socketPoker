@@ -5,6 +5,7 @@ const {createRoom} = require('./controllers/createRoom');
 const {joinRoom} = require('./controllers/joinRoom');
 const {startGame} = require('./controllers/startgame');
 const {ready, unready, disconnect} = require('./controllers/ready');
+const {endTurn} = require('./controllers/endTurn');
 
 // Keep track of the game state for each room
 const gameStates = {};
@@ -57,6 +58,11 @@ io.on('connection', socket => {
     startGame(gameStates, socket, io);
     //console.log(gameStates[socket.data.roomNumber]);
   });
+
+  socket.on('endTurn', (name, currentPlay, currentRaise) => {
+    endTurn(gameStates, socket, io, currentPlay, currentRaise);
+  });
+
   //disconnect handles termination due to the reason of quit the game or loss internet etc.(socket is closed)
   socket.on('disconnect', () => {
     disconnect(gameStates, socket, io);

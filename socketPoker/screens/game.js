@@ -15,6 +15,7 @@ export const ModalContext = createContext({
 });
 export default function Game({navigation}) {
   const socket = useContext(SocketContext);
+  const [gameTurn, setGameTurn] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
   const [gameStart, setGameStart] = useState(false);
   const [currentPlayer, setCurrentPlayer] = useState(false);
@@ -29,9 +30,15 @@ export default function Game({navigation}) {
   socket.on('checkCurrentPlayer', response => {
     setCurrentPlayer(response);
   });
+  socket.on('getTurn', response => {
+    setGameTurn(response);
+  });
   socket.on('getTotal', response => {
     setTotalMoney(response);
-    console.log(response);
+    // console.log(response);
+  });
+  socket.on('getCurrent', response => {
+    setBetRound(response);
   });
   return (
     <ModalContext.Provider value={{setModalVisible}}>
@@ -58,7 +65,7 @@ export default function Game({navigation}) {
           />
           <View style={styles.bodyRight}>
             {/* Public cards element */}
-            <PublicCards />
+            <PublicCards gameTurn={gameTurn} />
             {/* Private cards element */}
             <PrivateArea
               betRound={betRound}
@@ -81,6 +88,8 @@ export default function Game({navigation}) {
           setBetTurn={setBetTurn}
           betDiff={betDiff}
           setBetDiff={setBetDiff}
+          gameTurn={gameTurn}
+          gameStart={gameStart}
         />
         <ReadyButton gameStart={gameStart} />
       </View>

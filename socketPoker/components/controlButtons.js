@@ -14,18 +14,19 @@ const ControlButton = ({
   setBetTurn,
   betDiff,
   setBetDiff,
+  gameTurn,
+  gameStart,
 }) => {
-  useEffect(() => {
-    console.log(currentPlayer);
-    if (currentPlayer == global.Name) {
-      setCallState('FRC');
-    } else {
-      setCallState(false);
-    }
-    console.log(callState);
-  }, [currentPlayer]);
+  // useEffect(() => {
+  //   // console.log(currentPlayer);
+  //   if (currentPlayer == global.Name) {
+  //     setCallState('FRC');
+  //   } else {
+  //     setCallState(false);
+  //   }
+  //   // console.log(callState);
+  // }, [currentPlayer]);
 
-  const [gameTurn, setGameTurn] = useState('');
   const [callState, setCallState] = useState(false);
   const [lockButtons, setLockButtons] = useState(true);
   const [betTurnTemp, setBetTurnTemp] = useState(0);
@@ -43,9 +44,24 @@ const ControlButton = ({
     console.log(response);
   });
 
+  useEffect(() => {
+    console.log(gameTurn);
+    console.log(largestBet);
+    if (currentPlayer == global.Name && gameTurn == 'Preflop') {
+      setCallState('FRC');
+    } else if (currentPlayer == global.Name && largestBet == 0) {
+      setCallState('FBC');
+    } else if (currentPlayer == global.Name) {
+      setCallState('FRC');
+    } else if (gameTurn == 'Showdown') {
+      setReadyState(true);
+    }
+  }, [currentPlayer]);
+
   const handleAllin = () => {
     setSelfPlay('Allin');
     setBetTurn(totalMoney + betRound);
+    setBetDiff(totalMoney);
     setLockButtons(false);
     setConfirmState(true);
   };
@@ -96,7 +112,7 @@ const ControlButton = ({
     if (totalMoney + betRound <= largestBet) {
       return false;
     }
-    var bet = largestBet + Math.floor((largestBet + data.pot) / 2);
+    var bet = largestBet + Math.floor((largestBet + pot) / 2);
     setSelfPlay('Call');
     setBetTurn(bet);
     setBetDiff(bet - betRound);
@@ -129,12 +145,7 @@ const ControlButton = ({
     if (betTurn == totalMoney) {
       setSelfPlay('Allin');
     }
-    socket.emit('endTurn', {
-      roomNumber: global.roomNumber,
-      userName: global.name,
-      currentPlay: selfPlay,
-      currentRaise: betTurn,
-    });
+    socket.emit('endTurn', global.Name, selfPlay, betTurn);
 
     //add function to communicate with server here
     setConfirmState(false);
@@ -167,7 +178,7 @@ const ControlButton = ({
           />
         </View>
       )}
-      {!slider && callState && (
+      {!slider && callState && gameStart && (
         <View style={styles.roundButtons}>
           <TouchableOpacity onPress={handleRaiseMin}>
             <View style={styles.oval}>
@@ -192,7 +203,7 @@ const ControlButton = ({
         </View>
       )}
 
-      {callState == 'FRC' && lockButtons && (
+      {callState == 'FRC' && lockButtons && gameStart && (
         <View style={styles.squareButtons}>
           <TouchableOpacity onPress={handleFold}>
             <View style={styles.squareContainer1}>
@@ -212,7 +223,7 @@ const ControlButton = ({
           </TouchableOpacity>
         </View>
       )}
-      {callState == 'FBC' && lockButtons && (
+      {callState == 'FBC' && lockButtons && gameStart && (
         <View style={styles.squareButtons}>
           <TouchableOpacity onPress={handleFold}>
             <View style={styles.squareContainer1}>

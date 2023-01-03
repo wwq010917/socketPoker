@@ -12,7 +12,7 @@ class Room {
     this.largestBet = 0;
     this.largestRaise = 0;
     this.pot = 0;
-    this.gameTurn = 'Preflop';
+    this.gameTurn = false;
     this.winner;
     // [["S2", "S3"], ["H5", "HK"]]
   }
