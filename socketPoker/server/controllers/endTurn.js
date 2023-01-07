@@ -81,14 +81,17 @@ function endTurn(gameStates, socket, io, currentPlay, currentRaise) {
         case 'Preflop':
           console.log('starting flop');
           result.gameTurn = 'Flop';
+          io.emit('stage', result.gameTurn);
           break;
         case 'Flop':
           console.log('starting turn');
           result.gameTurn = 'Turn';
+          io.emit('stage', result.gameTurn);
           break;
         case 'Turn':
           console.log('starting river');
           result.gameTurn = 'River';
+          io.emit('stage', result.gameTurn);
           break;
         case 'River':
           endGame(result);

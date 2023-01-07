@@ -23,11 +23,8 @@ const Header = ({navigation}) => {
     socket.on('countdown', count => {
       setTime(count);
       if (count == 0) {
-        console.log('something');
         setPassed(true);
         socket.on('stage', stage => {
-          console.log('something2');
-          console.log(stage);
           setRound(stage);
         });
       }

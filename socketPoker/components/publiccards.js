@@ -1,8 +1,8 @@
-import React, {useState} from 'react';
-import {View, Text, Image, StyleSheet} from 'react-native';
-
+import React, {useState, useContext, useRef} from 'react';
+import {View, Text, Image, StyleSheet, Animated} from 'react-native';
+import {SocketContext} from '../screens/home';
 const PublicCards = () => {
-  //
+  const socket = useContext(SocketContext);
   const [publicCards, setPublicCards] = useState([
     {number: 'A', suit: 'Spade', key: '1'},
     {number: '2', suit: 'Club', key: '2'},
@@ -17,6 +17,34 @@ const PublicCards = () => {
     Diamond: require('../assets/diamond.png'),
     Club: require('../assets/club.png'),
   };
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+  const fadeAnim2 = useRef(new Animated.Value(0)).current;
+  const fadeAnim3 = useRef(new Animated.Value(0)).current;
+  socket.on('stage', stage => {
+    setGameTurn(stage);
+    console.log(stage);
+    // Fade in the public cards when they are revealed
+    if (stage === 'Flop') {
+      //console.log(stage);
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 1500,
+        useNativeDriver: true,
+      }).start();
+    } else if (stage === 'Turn') {
+      Animated.timing(fadeAnim2, {
+        toValue: 1,
+        duration: 1500,
+        useNativeDriver: true,
+      }).start();
+    } else if (stage === 'River') {
+      Animated.timing(fadeAnim3, {
+        toValue: 1,
+        duration: 1500,
+        useNativeDriver: true,
+      }).start();
+    }
+  });
   return (
     <View>
       <View style={styles.publicCardsTop}>
@@ -25,13 +53,13 @@ const PublicCards = () => {
             gameTurn == 'Turn' ||
             gameTurn == 'River' ||
             gameTurn == 'Showdown') && (
-            <View>
+            <Animated.View style={{opacity: fadeAnim}}>
               <Text style={styles.cardNumber}>{publicCards[0].number}</Text>
               <Image
                 style={styles.suitVertical}
                 source={cards[publicCards[0].suit]}
               />
-            </View>
+            </Animated.View>
           )}
         </View>
         <View style={styles.cardVertical}>
@@ -39,13 +67,13 @@ const PublicCards = () => {
             gameTurn == 'Turn' ||
             gameTurn == 'River' ||
             gameTurn == 'Showdown') && (
-            <View>
+            <Animated.View style={{opacity: fadeAnim}}>
               <Text style={styles.cardNumber}>{publicCards[1].number}</Text>
               <Image
                 style={styles.suitVertical}
                 source={cards[publicCards[1].suit]}
               />
-            </View>
+            </Animated.View>
           )}
         </View>
         <View style={styles.cardVertical}>
@@ -53,13 +81,13 @@ const PublicCards = () => {
             gameTurn == 'Turn' ||
             gameTurn == 'River' ||
             gameTurn == 'Showdown') && (
-            <View>
+            <Animated.View style={{opacity: fadeAnim}}>
               <Text style={styles.cardNumber}>{publicCards[2].number}</Text>
               <Image
                 style={styles.suitVertical}
                 source={cards[publicCards[2].suit]}
               />
-            </View>
+            </Animated.View>
           )}
         </View>
       </View>
@@ -68,24 +96,24 @@ const PublicCards = () => {
           {(gameTurn == 'Turn' ||
             gameTurn == 'River' ||
             gameTurn == 'Showdown') && (
-            <View>
+            <Animated.View style={{opacity: fadeAnim2}}>
               <Text style={styles.cardNumber}>{publicCards[3].number}</Text>
               <Image
                 style={styles.suitVertical}
                 source={cards[publicCards[3].suit]}
               />
-            </View>
+            </Animated.View>
           )}
         </View>
         <View style={styles.cardVertical}>
           {(gameTurn == 'River' || gameTurn == 'Showdown') && (
-            <View>
+            <Animated.View style={{opacity: fadeAnim3}}>
               <Text style={styles.cardNumber}>{publicCards[4].number}</Text>
               <Image
                 style={styles.suitVertical}
                 source={cards[publicCards[4].suit]}
               />
-            </View>
+            </Animated.View>
           )}
         </View>
       </View>

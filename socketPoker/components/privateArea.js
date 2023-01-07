@@ -1,5 +1,5 @@
-import {View, Text, StyleSheet, Image} from 'react-native';
-import React, {useState, useContext} from 'react';
+import {View, Text, StyleSheet, Image, Animated} from 'react-native';
+import React, {useState, useContext, useRef} from 'react';
 import {SocketContext} from '../screens/home';
 const privateArea = ({betRound, pot, totalMoney, betTurn, betDiff}) => {
   const socket = useContext(SocketContext);
@@ -10,7 +10,7 @@ const privateArea = ({betRound, pot, totalMoney, betTurn, betDiff}) => {
   const [privateCards, setPrivateCards] = useState(nativePrivateCards);
   const [handRank, setHandRank] = useState('High Card');
   const [allHandRanks, setAllHandRanks] = useState(false);
-
+  const fadeAnim = useRef(new Animated.Value(0)).current;
   const cards = {
     Spade: require('../assets/spade.png'),
     Heart: require('../assets/heart.png'),
@@ -20,6 +20,11 @@ const privateArea = ({betRound, pot, totalMoney, betTurn, betDiff}) => {
 
   socket.on('privateCard', card => {
     setPrivateCards(card);
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration: 1500,
+      useNativeDriver: true,
+    }).start();
   });
   return (
     <View>
@@ -35,42 +40,44 @@ const privateArea = ({betRound, pot, totalMoney, betTurn, betDiff}) => {
       </View>
 
       {/* Private Cards Section */}
-      <View style={styles.privateCards}>
-        <View style={styles.cardVertical}>
-          <Text style={styles.cardNumber}>
-            {privateCards[0] != undefined
-              ? privateCards[0].number
-              : nativePrivateCards[0].number}
-          </Text>
-          <Image
-            style={styles.suitVertical}
-            source={
-              cards[
-                privateCards[0] != undefined
-                  ? privateCards[0].suit
-                  : nativePrivateCards[0].suit
-              ]
-            }
-          />
+      <Animated.View style={{opacity: fadeAnim}}>
+        <View style={styles.privateCards}>
+          <View style={styles.cardVertical}>
+            <Text style={styles.cardNumber}>
+              {privateCards[0] != undefined
+                ? privateCards[0].number
+                : nativePrivateCards[0].number}
+            </Text>
+            <Image
+              style={styles.suitVertical}
+              source={
+                cards[
+                  privateCards[0] != undefined
+                    ? privateCards[0].suit
+                    : nativePrivateCards[0].suit
+                ]
+              }
+            />
+          </View>
+          <View style={styles.cardVertical}>
+            <Text style={styles.cardNumber}>
+              {privateCards[1] != undefined
+                ? privateCards[1].number
+                : nativePrivateCards[1].number}
+            </Text>
+            <Image
+              style={styles.suitVertical}
+              source={
+                cards[
+                  privateCards[1] != undefined
+                    ? privateCards[1].suit
+                    : nativePrivateCards[1].suit
+                ]
+              }
+            />
+          </View>
         </View>
-        <View style={styles.cardVertical}>
-          <Text style={styles.cardNumber}>
-            {privateCards[1] != undefined
-              ? privateCards[1].number
-              : nativePrivateCards[1].number}
-          </Text>
-          <Image
-            style={styles.suitVertical}
-            source={
-              cards[
-                privateCards[1] != undefined
-                  ? privateCards[1].suit
-                  : nativePrivateCards[1].suit
-              ]
-            }
-          />
-        </View>
-      </View>
+      </Animated.View>
       <View
         style={[
           {

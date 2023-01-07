@@ -169,6 +169,7 @@ export default function Home({navigation}) {
 const styles = StyleSheet.create({
   HomeContainer: {
     flex: 1,
+    backgroundColor: '#F3F4FB',
   },
   nameContainer: {
     padding: 5,
