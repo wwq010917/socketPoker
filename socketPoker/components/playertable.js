@@ -18,7 +18,7 @@ const PlayerTable = ({gameStart, setGameStart, currentPlayer}) => {
   });
 
   socket.on('wait', success => {
-    if (success == true) {
+    if (success === true) {
       socket.emit('start');
       // setGameStart(true);
     }

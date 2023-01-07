@@ -1,8 +1,27 @@
 import React, {useState, createContext, useContext} from 'react';
 import {StyleSheet, Text, View, Button, Modal, Alert} from 'react-native';
 import {TextInput} from 'react-native-gesture-handler';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import io from 'socket.io-client';
-export const SocketContext = createContext(io('http://10.0.2.2:3000'));
+export const SocketContext = createContext(io('http://10.0.2.2:3001'));
+const storeName = async value => {
+  try {
+    await AsyncStorage.setItem('name', value);
+  } catch (e) {
+    // saving error
+  }
+};
+
+const retrieveName = async () => {
+  try {
+    const name = await AsyncStorage.getItem('name');
+
+    return name;
+  } catch (error) {
+    console.error(error);
+    return '';
+  }
+};
 export default function Home({navigation}) {
   const socket = useContext(SocketContext);
 
@@ -34,18 +53,22 @@ export default function Home({navigation}) {
 
     // Emit a 'create' event through the socket connection
     socket.emit('create', Name);
+    await storeName(Name);
+    console.log('Name is ' + (await retrieveName()));
     global.Name = Name;
     navigation.navigate('Game');
   };
 
   // Event handler for when the user wants to join a game
   const handleJoinPress = async () => {
+    onChangeText(await retrieveName());
     setModalOneVisible(true);
     setIsHostGamePressed(false);
   };
 
   // Event handler for when the user wants to host a game
   const handleHostPress = async () => {
+    onChangeText(await retrieveName());
     setModalOneVisible(true);
     setIsHostGamePressed(true);
   };
@@ -69,6 +92,7 @@ export default function Home({navigation}) {
       if (response.success) {
         // The join event was successful
         global.Name = Name;
+        storeName(Name);
         navigation.navigate('Game');
       } else {
         // The join event was not successful

@@ -28,7 +28,6 @@ function ready(gameStates, socket, callback, io) {
         countdown -= 1;
         console.log(`Time remaining: ${countdown} seconds`);
         if (countdown === -1) {
-          console.log('All players are ready');
           //send a emit to client notify that game can be started
           socket.emit('wait', true);
           callback({success: true});
@@ -36,7 +35,6 @@ function ready(gameStates, socket, callback, io) {
         }
       }, 1000);
     } else {
-      console.log('Not all players are ready');
       socket.emit('wait', false);
       callback({success: false});
     }

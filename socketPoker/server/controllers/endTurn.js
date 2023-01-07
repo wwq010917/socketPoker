@@ -3,9 +3,11 @@ function endTurn(gameStates, socket, io, currentPlay, currentRaise) {
 
   console.log('initiating endturn ' + userName);
   var result = gameStates[socket.data.roomNumber];
+  console.log(result);
   if (result) {
     var players = new Map(Object.entries(result.players));
     players = Array.from(players.values());
+    var player;
     // console.log(players);
     //set player as the current player
     for (var i = 0; i < players.length; i++) {
@@ -35,6 +37,7 @@ function endTurn(gameStates, socket, io, currentPlay, currentRaise) {
     //check if game needs to end
     if (checkEndGame(result)) {
       endGame(result);
+      gameStates[socket.data.roomNumber] = result;
       return true;
     }
 
@@ -136,7 +139,9 @@ function endTurn(gameStates, socket, io, currentPlay, currentRaise) {
     io.to(players[i].id.toString()).emit('getCurrent', players[i].current);
     console.log(players[i].total);
   }
-
+  gameStates[socket.data.roomNumber] = result;
+  console.log('final');
+  console.log(result);
   io.emit('checkCurrentPlayer', result.currentPlayer.name);
 }
 

@@ -45,7 +45,6 @@ const ControlButton = ({
   });
 
   useEffect(() => {
-    console.log(gameTurn);
     console.log(largestBet);
     if (currentPlayer == global.Name && gameTurn == 'Preflop') {
       setCallState('FRC');
@@ -192,7 +191,7 @@ const ControlButton = ({
           </TouchableOpacity>
           <TouchableOpacity onPress={handleRaiseFull}>
             <View style={styles.oval}>
-              <Text style={styles.ovalText}>{gameTurn}</Text>
+              <Text style={styles.ovalText}>Pot</Text>
             </View>
           </TouchableOpacity>
           <TouchableOpacity onPress={handleAllin}>

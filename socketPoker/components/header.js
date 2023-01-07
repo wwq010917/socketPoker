@@ -7,6 +7,8 @@ import {ModalContext} from '../screens/game';
 const Header = ({navigation}) => {
   const {setModalVisible} = useContext(ModalContext);
   const socket = useContext(SocketContext);
+  const [startGame, setStartGame] = useState(false);
+  const [Round, setRound] = useState('');
   const [roomNumber, setNumber] = useState(0);
   const [waiting, setWaiting] = useState(false);
   const [time, setTime] = useState(5);
@@ -15,14 +17,19 @@ const Header = ({navigation}) => {
     socket.on('timer', wait => {
       setWaiting(wait);
     });
-  }, [waiting]); // the empty array ensures that the effect only runs once
-
+  }, [waiting]);
   useEffect(() => {
     //
     socket.on('countdown', count => {
       setTime(count);
       if (count == 0) {
+        console.log('something');
         setPassed(true);
+        socket.on('stage', stage => {
+          console.log('something2');
+          console.log(stage);
+          setRound(stage);
+        });
       }
     });
   }, [time]); // the empty array ensures that the effect only runs once
@@ -52,11 +59,15 @@ const Header = ({navigation}) => {
           <Text style={{fontSize: 30}}>{time}</Text>
         </View>
       )}
+      {waiting && passed && (
+        <View>
+          <Text style={{fontSize: 26}}>{Round}</Text>
+        </View>
+      )}
 
       <View style={styles.settings}>
         <TouchableOpacity
           onPress={() => {
-            console.log('feedback');
             setModalVisible(true);
           }}>
           <FontAwesomeIcon icon={faGear} size={35} style={styles.icon} />

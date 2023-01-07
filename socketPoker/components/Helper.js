@@ -18,7 +18,6 @@ const Helper = () => {
   return (
     <TouchableWithoutFeedback
       onPress={() => {
-        console.log('nice');
         setModalVisible(false);
       }}>
       <View style={styles.modalContainer}>

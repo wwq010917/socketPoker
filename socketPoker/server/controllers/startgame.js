@@ -62,7 +62,6 @@ function startGame(gameStates, socket, io) {
     result = getFlop(result);
     io.emit('checkStart', true);
 
-    console.log(result);
     var players = new Map(Object.entries(result.players));
     players = Array.from(players.values());
     const cardMap = new Map();
@@ -78,14 +77,17 @@ function startGame(gameStates, socket, io) {
       }
       console.log(players[i].id);
       console.log(cardArray);
+      cardMap.set(players[i].id, cardArray);
       io.to(players[i].id.toString()).emit('privateCard', cardArray);
     }
     result.playerCards = cardMap;
+
     gameStates[socket.data.roomNumber] = result;
+    console.log(result.gameTurn);
+    io.emit('stage', result.gameTurn);
     for (var i = 0; i < players.length; i++) {
       io.to(players[i].id.toString()).emit('getTotal', players[i].total);
       io.to(players[i].id.toString()).emit('getCurrent', players[i].current);
-      console.log(players[i].total);
     }
   }
 }

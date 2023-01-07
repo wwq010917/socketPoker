@@ -1,4 +1,4 @@
-const io = require('socket.io')(3000);
+const io = require('socket.io')(3001);
 const {Room} = require('./class/Room.js');
 const {playerStatus} = require('./class/playerStatus.js');
 const {createRoom} = require('./controllers/createRoom');
