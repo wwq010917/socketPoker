@@ -84,7 +84,9 @@ function startGame(gameStates, socket, io) {
 
     gameStates[socket.data.roomNumber] = result;
     console.log(result.gameTurn);
+    console.log(result);
     io.emit('stage', result.gameTurn);
+    io.emit('publicCard', result.communityCards);
     for (var i = 0; i < players.length; i++) {
       io.to(players[i].id.toString()).emit('getTotal', players[i].total);
       io.to(players[i].id.toString()).emit('getCurrent', players[i].current);

@@ -4,11 +4,11 @@ import {SocketContext} from '../screens/home';
 const PublicCards = () => {
   const socket = useContext(SocketContext);
   const [publicCards, setPublicCards] = useState([
-    {number: 'A', suit: 'Spade', key: '1'},
-    {number: '2', suit: 'Club', key: '2'},
-    {number: '3', suit: 'Diamond', key: '3'},
-    {number: '4', suit: 'Heart', key: '4'},
-    {number: '5', suit: 'Spade', key: '5'},
+    {number: 'A', suit: 'Spade'},
+    {number: '2', suit: 'Club'},
+    {number: '3', suit: 'Diamond'},
+    {number: '4', suit: 'Heart'},
+    {number: '5', suit: 'Spade'},
   ]);
   const [gameTurn, setGameTurn] = useState('');
   const cards = {
@@ -20,6 +20,9 @@ const PublicCards = () => {
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const fadeAnim2 = useRef(new Animated.Value(0)).current;
   const fadeAnim3 = useRef(new Animated.Value(0)).current;
+  socket.on('publicCard', publicCards => {
+    setPublicCards(publicCards);
+  });
   socket.on('stage', stage => {
     setGameTurn(stage);
     console.log(stage);

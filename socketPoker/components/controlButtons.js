@@ -2,6 +2,7 @@ import React, {useState, useContext, useEffect} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import {SocketContext} from '../screens/home';
 import {Slider} from '@miblanchard/react-native-slider';
+
 const ControlButton = ({
   currentPlayer,
   betRound,
